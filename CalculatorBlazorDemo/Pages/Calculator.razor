@@ -1,0 +1,211 @@
+﻿@page "/calculator"
+<h3>Calculator</h3>
+
+<div class="calculator">
+
+    <div class="out-put border border-secondary ">
+
+        @if (num1 != 0)
+        {
+            @if (num1 < 0)
+            {
+                <label>(</label>
+                 @num1
+                <label>)</label>
+
+            }
+            else
+                @num1
+            
+        }
+        @special
+        @if (num2 != 0)
+        {
+            @if (num2 < 0)
+            {
+                <label>(</label>
+                 @num2
+                <label>)</label>
+
+            }
+            else
+                 @num2
+        }
+
+        <div class="border border-top">
+            @result
+        </div>
+    </div>
+
+    <div class="row align-items-center ">
+        <div class="col">
+            <button @onclick="Clear" class="btn btn-dark">C</button>
+            <button @onclick="() => AddSpecial('%')" class="btn btn-dark">%</button>
+            <button class="btn btn-dark">( )</button>
+            <button @onclick="Remove" class="btn btn-dark"><span class="oi oi-delete"></span></button>
+        </div>
+        <div>
+            <button @onclick="() => AddSpecial('p')" class="btn btn-dark">X<sup>2</sup></button>
+            <button @onclick="() => AddSpecial('^')" class="btn btn-dark">X<sup>y</sup></button>
+            <button @onclick="() => AddSpecial((char)8730)" class="btn btn-dark"><sup>2</sup>&radic;</button>
+            <button @onclick="() => AddSpecial('/')" class="btn btn-dark">&divide;</button>
+        </div>
+        <div>
+            <button @onclick="() =>Add(7)" class="btn btn-dark">7</button>
+            <button @onclick="() =>Add(8)" class="btn btn-dark">8</button>
+            <button @onclick="() =>Add(9)" class="btn btn-dark">9</button>
+            <button @onclick="() => AddSpecial('*')" class="btn btn-dark">&times;</button>
+        </div>
+        <div>
+            <button @onclick="() =>Add(4)" class="btn btn-dark">4</button>
+            <button @onclick="() =>Add(5)" class="btn btn-dark">5</button>
+            <button @onclick="() =>Add(6)" class="btn btn-dark">6</button>
+            <button @onclick="() => AddSpecial('-')" class="btn btn-dark">&minus;</button>
+        </div>
+        <div>
+            <button @onclick="() =>Add(1)" class="btn btn-dark">1</button>
+            <button @onclick="() =>Add(2)" class="btn btn-dark">2</button>
+            <button @onclick="() =>Add(3)" class="btn btn-dark">3</button>
+            <button @onclick="() => AddSpecial('+')" class="btn btn-dark">&plus;</button>
+        </div>
+        <div>
+            <button @onclick="AddMinus" class="btn btn-dark">&plusmn;</button>
+            <button @onclick="() =>Add(0)" class="btn btn-dark">0</button>
+            <button class="btn btn-dark">.</button>
+            <button @onclick="Result" class="btn btn-dark">=</button>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+
+    .btn {
+        min-width: 50px;
+        min-height: 50px;
+        margin: 2px;
+    }
+
+    .calculator {
+        width: 230px;
+    }
+
+    .out-put {
+        min-height: 50px;
+        width: 100%;
+    }
+
+</style>
+
+@code {
+    /// <summary>
+    /// pergjegjese per indeksin, vendodhjen e cdo el
+    /// </summary>
+    int i = 0;
+
+    double num1 = 0, num2 = 0;
+    char special;
+    string sqrt = "sqrt", powerY = "^";
+
+    string result;
+
+    protected override void OnInitialized()
+    {
+        special = ' ';
+    }
+
+    public void Add(int nr)
+    {
+        if (special == ' ')
+        {
+
+            num1 = num1 * 10 + nr;
+        }
+        else
+        {
+            num2 = num2 * 10 + nr;
+        }
+    }
+
+    public void Remove()
+    {
+        string t = num1.ToString();
+        if (t.Length > 0)
+        {
+            t = t.Substring(0, t.Length - 1); //hqeim nje nr
+            if (t == "")
+                num1 = 0;
+            else
+                num1 = Double.Parse(t);
+        }
+    }
+
+    void AddMinus()
+    {
+        if (special == ' ')
+            num1 = -num1;
+        else
+            num2 = -num2;
+    }
+
+    void Clear()
+    {
+        Clear(false);
+    }
+    void Clear(bool t)
+    {
+        special = ' ';
+        if (!t)
+            result = null;
+        num1 = 0;
+        num2 = 0;
+    }
+    void AddSpecial(char ch)
+    {
+        if (special == ' ')
+            special = ch;
+        else
+            Result();
+
+        switch (ch)
+        {
+            case '%':
+                result = (num1 / 100).ToString();
+                break;
+            case (char)8730:
+                result = (Math.Sqrt(num1)).ToString();
+                break;
+            case 'p':
+                result = Math.Pow(num1, 2).ToString();
+                special = ' ';
+                break;
+
+        }
+
+    }
+
+    void Result()
+    {
+        switch (special)
+        {
+            case '+':
+                result = (num1 + num2).ToString();
+                break;
+            case '-':
+                result = (num1 - num2).ToString();
+                break;
+            case '*':
+                result = (num1 * num2).ToString();
+                break;
+            case '/':
+                result = (num1 / num2).ToString();
+                break;
+            case '^':
+                result = Math.Pow(num1, num2).ToString();
+                break;
+        }
+        Clear(true);
+    }
+
+}
