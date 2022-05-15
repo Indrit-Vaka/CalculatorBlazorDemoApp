@@ -1,5 +1,5 @@
 # Blazor Calculator Demo App By
-A simple Calculator app built with Blazor ** By Indrit Vaka.
+A simple Calculator app built with Blazor **By Indrit Vaka.**
 
 ### The project includes
    1. Methods
